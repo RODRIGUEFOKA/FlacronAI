@@ -7,6 +7,8 @@ import {
 } from 'firebase/auth';
 import { auth } from '../config/firebase';
 
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
+
 const AuthContext = createContext({});
 
 export const useAuth = () => {
@@ -86,7 +88,7 @@ export const AuthProvider = ({ children }) => {
       const displayName = userCredential.user.displayName || userCredential.user.email.split('@')[0];
 
       // Sync user with backend
-      const response = await fetch('http://localhost:3000/api/auth/sync-user', {
+      const response = await fetch(`${API_BASE_URL}/auth/sync-user`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -117,7 +119,7 @@ export const AuthProvider = ({ children }) => {
       // Call backend logout if we have a token
       if (token) {
         try {
-          await fetch('http://localhost:3000/api/auth/logout', {
+          await fetch(`${API_BASE_URL}/auth/logout`, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
