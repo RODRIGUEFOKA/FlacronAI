@@ -1,8 +1,13 @@
 import { useState, useEffect } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
 const Auth = () => {
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
+  const redirectTo = searchParams.get('redirect');
+  const selectedPlan = searchParams.get('plan');
+
   useEffect(() => {
     document.title = 'Sign In | FlacronAI';
   }, []);
@@ -44,7 +49,13 @@ const Auth = () => {
     try {
       if (isLogin) {
         await login(formData.email, formData.password);
-        navigate('/dashboard');
+
+        // Redirect based on query params using replace to prevent back button issues
+        if (redirectTo === 'checkout') {
+          navigate('/checkout', { replace: true });
+        } else {
+          navigate('/dashboard', { replace: true });
+        }
       } else {
         // Validate passwords match
         if (formData.password !== formData.passwordConfirm) {
@@ -63,7 +74,15 @@ const Auth = () => {
 
         await register(formData.email, formData.password, formData.displayName);
         setSuccess('Account created! Please check your email to verify.');
-        setTimeout(() => navigate('/dashboard'), 2000);
+
+        // Redirect based on query params after successful registration using replace
+        setTimeout(() => {
+          if (redirectTo === 'checkout') {
+            navigate('/checkout', { replace: true });
+          } else {
+            navigate('/dashboard', { replace: true });
+          }
+        }, 2000);
       }
     } catch (err) {
       setError(err.message || 'Authentication failed. Please try again.');

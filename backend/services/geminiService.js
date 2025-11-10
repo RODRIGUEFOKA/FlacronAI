@@ -7,19 +7,29 @@ const { generateContent, analyzeImage, generateReport } = require('../config/gem
 async function generateInsuranceReport(reportData) {
   try {
     console.log('Generating report with Gemini AI...');
+    console.log('Report data:', {
+      claimNumber: reportData.claimNumber,
+      insuredName: reportData.insuredName,
+      lossType: reportData.lossType
+    });
+
     const reportText = await generateReport(reportData);
+
+    console.log('Report generated successfully, length:', reportText?.length || 0);
+
     return {
       success: true,
       content: reportText,
       metadata: {
         generatedAt: new Date().toISOString(),
-        model: 'gemini-1.5-pro',
+        model: 'gemini-2.5-flash',
         reportType: reportData.reportType,
         claimNumber: reportData.claimNumber
       }
     };
   } catch (error) {
     console.error('Report generation failed:', error);
+    console.error('Error stack:', error.stack);
     return {
       success: false,
       error: error.message

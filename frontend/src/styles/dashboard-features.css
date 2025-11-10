@@ -248,16 +248,18 @@
 }
 
 .plan-card .btn {
-  background: #ffffff;
-  color: #FF7C08;
-  border: none;
+  background: #1f2937;
+  color: #ffffff;
+  border: 2px solid #1f2937;
   font-weight: 600;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
 .plan-card .btn:hover {
-  background: #f3f4f6;
+  background: #111827;
+  border-color: #111827;
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
 }
 
 /* Features List */
@@ -453,6 +455,19 @@
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 2rem;
+}
+
+/* Medium screens - 2 columns */
+@media (max-width: 1200px) and (min-width: 769px) {
+  .pricing-modal-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .pricing-modal-card:last-child {
+    grid-column: 1 / -1;
+    max-width: 50%;
+    margin: 0 auto;
+  }
 }
 
 /* Pricing Modal Card */

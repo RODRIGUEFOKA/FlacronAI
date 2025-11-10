@@ -125,12 +125,17 @@ router.get('/', authenticateToken, async (req, res) => {
     const limit = parseInt(req.query.limit) || 50;
     const offset = parseInt(req.query.offset) || 0;
 
+    console.log('Fetching reports for user:', userId, 'limit:', limit, 'offset:', offset);
+
     const result = await getUserReports(userId, limit, offset);
+
+    console.log('Reports fetched:', result.success ? result.count : 'Failed');
 
     res.json(result);
 
   } catch (error) {
     console.error('Get reports error:', error);
+    console.error('Error stack:', error.stack);
     res.status(500).json({
       success: false,
       error: error.message
@@ -276,9 +281,15 @@ router.post('/:id/export', authenticateToken, async (req, res) => {
 
   } catch (error) {
     console.error('Export report error:', error);
+    console.error('Export error stack:', error.stack);
+    console.error('Export error details:', {
+      reportId: req.params.id,
+      format: req.body.format,
+      userId: req.user?.userId
+    });
     res.status(500).json({
       success: false,
-      error: error.message
+      error: error.message || 'Failed to export report'
     });
   }
 });
@@ -312,6 +323,23 @@ router.post('/:id/images', authenticateToken, upload.array('images', 10), async 
     const uploadResults = await Promise.all(uploadPromises);
 
     const successfulUploads = uploadResults.filter(r => r.success);
+
+    // Update report document with image URLs
+    if (successfulUploads.length > 0) {
+      const { getFirestore } = require('../config/firebase');
+      const db = getFirestore();
+      const reportRef = db.collection('reports').doc(reportId);
+
+      const imageUrls = successfulUploads.map(upload => ({
+        url: upload.url,
+        fileName: upload.fileName
+      }));
+
+      await reportRef.update({
+        images: imageUrls,
+        updatedAt: new Date().toISOString()
+      });
+    }
 
     res.json({
       success: true,

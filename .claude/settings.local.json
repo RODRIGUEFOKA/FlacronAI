@@ -37,7 +37,11 @@
       "Bash(git commit:*)",
       "Bash(git branch:*)",
       "Bash(git remote add:*)",
-      "Bash(git push:*)"
+      "Bash(git push:*)",
+      "WebFetch(domain:flacronai.onrender.com)",
+      "Bash(powershell -Command \"Get-Content ''C:\\Users\\pc\\Desktop\\FlacronCV\\frontend\\src\\pages\\Dashboard.jsx'' | Measure-Object -Line\")",
+      "Bash(mkdir:*)",
+      "Bash(git log:*)"
     ],
     "deny": [],
     "ask": []

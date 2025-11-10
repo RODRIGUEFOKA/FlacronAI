@@ -16,9 +16,9 @@ function initializeGemini() {
 
     genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
-    // Use Gemini 2.5 Pro for report generation
+    // Use Gemini 2.5 Flash for report generation
     model = genAI.getGenerativeModel({
-      model: 'models/gemini-2.5-pro',
+      model: 'gemini-2.5-flash',
       generationConfig: {
         temperature: 0.7,
         topK: 40,
@@ -54,7 +54,7 @@ function getGeminiVisionModel() {
   }
 
   return genAI.getGenerativeModel({
-    model: 'models/gemini-2.5-flash',
+    model: 'gemini-2.5-flash',
     generationConfig: {
       temperature: 0.4,
       topK: 32,
@@ -75,16 +75,24 @@ async function generateContent(prompt) {
     return response.text();
   } catch (error) {
     console.error('Gemini content generation error:', error);
+    console.error('Error details:', {
+      message: error.message,
+      status: error.status,
+      statusText: error.statusText,
+      stack: error.stack
+    });
 
     // Provide more specific error messages
     if (error.message && error.message.includes('fetch failed')) {
       throw new Error('Network error: Unable to connect to Google AI. Please check your internet connection and firewall settings.');
-    } else if (error.message && error.message.includes('API key')) {
+    } else if (error.message && (error.message.includes('API key') || error.message.includes('API_KEY_INVALID'))) {
       throw new Error('Invalid API key. Please check your GEMINI_API_KEY environment variable.');
     } else if (error.status === 429) {
       throw new Error('Rate limit exceeded. Please try again later.');
     } else if (error.status === 400) {
       throw new Error('Invalid request to Gemini API. The model may not support the requested parameters.');
+    } else if (error.message && error.message.includes('models/')) {
+      throw new Error(`Invalid model name. Error: ${error.message}`);
     }
 
     throw new Error(`Failed to generate AI content: ${error.message || 'Unknown error'}`);

@@ -1,0 +1,46 @@
+{
+  "name": "FlacronAI",
+  "displayName": "FlacronAI",
+  "version": "1.0.0",
+  "expo": {
+    "name": "FlacronAI",
+    "slug": "flacronai-mobile",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.flacronenterprises.flacronai",
+      "buildNumber": "1.0.0",
+      "infoPlist": {
+        "NSCameraUsageDescription": "This app requires camera access to capture inspection photos.",
+        "NSPhotoLibraryUsageDescription": "This app requires photo library access to select inspection photos.",
+        "NSLocationWhenInUseUsageDescription": "This app requires location access to include property location in reports."
+      }
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#ffffff"
+      },
+      "package": "com.flacronenterprises.flacronai",
+      "versionCode": 1,
+      "permissions": [
+        "android.permission.CAMERA",
+        "android.permission.READ_EXTERNAL_STORAGE",
+        "android.permission.WRITE_EXTERNAL_STORAGE",
+        "android.permission.ACCESS_FINE_LOCATION",
+        "android.permission.INTERNET"
+      ]
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    }
+  }
+}

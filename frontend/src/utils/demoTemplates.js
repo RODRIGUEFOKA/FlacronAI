@@ -243,13 +243,20 @@ export function createTemplateSelector(formId, containerId) {
             input.dispatchEvent(new Event('change', { bubbles: true }));
 
             // Force React state update by setting the value descriptor
-            const nativeInputValueSetter = Object.getOwnPropertyDescriptor(
-              window.HTMLInputElement.prototype,
-              'value'
-            ).set;
-            nativeInputValueSetter.call(input, value);
-
-            input.dispatchEvent(new Event('input', { bubbles: true }));
+            try {
+              const descriptor = Object.getOwnPropertyDescriptor(
+                window.HTMLInputElement.prototype,
+                'value'
+              );
+              if (descriptor && descriptor.set) {
+                descriptor.set.call(input, value);
+                input.dispatchEvent(new Event('input', { bubbles: true }));
+              }
+            } catch (e) {
+              // Fallback: just set the value normally
+              input.value = value;
+              input.dispatchEvent(new Event('input', { bubbles: true }));
+            }
           }
         }
 

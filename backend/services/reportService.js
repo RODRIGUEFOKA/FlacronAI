@@ -91,11 +91,11 @@ async function getReportById(reportId, userId) {
 async function getUserReports(userId, limit = 50, offset = 0) {
   try {
     const db = getFirestore();
+
+    // Query without orderBy to avoid index requirement
+    // We'll sort in memory instead
     const reportsSnapshot = await db.collection('reports')
       .where('userId', '==', userId)
-      .orderBy('createdAt', 'desc')
-      .limit(limit)
-      .offset(offset)
       .get();
 
     const reports = [];
@@ -106,13 +106,25 @@ async function getUserReports(userId, limit = 50, offset = 0) {
       });
     });
 
+    // Sort by createdAt in memory
+    reports.sort((a, b) => {
+      const dateA = new Date(a.createdAt);
+      const dateB = new Date(b.createdAt);
+      return dateB - dateA; // Descending order (newest first)
+    });
+
+    // Apply limit and offset in memory
+    const paginatedReports = reports.slice(offset, offset + limit);
+
     return {
       success: true,
-      reports: reports,
-      count: reports.length
+      reports: paginatedReports,
+      count: paginatedReports.length,
+      total: reports.length
     };
   } catch (error) {
     console.error('Get user reports error:', error);
+    console.error('Error details:', error.stack);
     return {
       success: false,
       error: error.message
