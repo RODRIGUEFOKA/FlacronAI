@@ -41,6 +41,16 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "apiUrl": "https://flacronai.onrender.com/api",
+      "firebaseApiKey": "AIzaSyAEtWQZaTf8czc8tLdMatYSnAUhIOyCOis",
+      "firebaseAuthDomain": "flacronai-c8dab.firebaseapp.com",
+      "firebaseProjectId": "flacronai-c8dab",
+      "firebaseStorageBucket": "flacronai-c8dab.firebasestorage.app",
+      "firebaseMessagingSenderId": "773892679617",
+      "firebaseAppId": "1:773892679617:web:daa3f6b5e3774501957140",
+      "firebaseMeasurementId": "G-NB7SZYH1KS"
     }
   }
 }

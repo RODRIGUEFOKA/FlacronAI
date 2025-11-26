@@ -39,3 +39,7 @@ reports/*.docx
 # Testing
 coverage/
 .nyc_output/
+
+# Expo
+.expo/
+.expo-shared/

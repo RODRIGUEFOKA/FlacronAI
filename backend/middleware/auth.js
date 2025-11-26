@@ -1,8 +1,12 @@
 // Authentication Middleware for FlacronAI
 const { getAuth } = require('../config/firebase');
+const jwt = require('jsonwebtoken');
+
+// Secret for mobile app JWT tokens (in production, use environment variable)
+const JWT_SECRET = process.env.JWT_SECRET || 'flacronai-mobile-secret-2024';
 
 /**
- * Middleware to verify Firebase ID token
+ * Middleware to verify Firebase ID token OR mobile app JWT token
  */
 async function authenticateToken(req, res, next) {
   try {
@@ -16,31 +20,41 @@ async function authenticateToken(req, res, next) {
       });
     }
 
-    // Verify the ID token
-    const decodedToken = await getAuth().verifyIdToken(token);
-
-    // Attach user info to request
-    req.user = {
-      userId: decodedToken.uid,
-      email: decodedToken.email
-    };
-
-    next();
-
-  } catch (error) {
-    // Check if token is expired (this is normal, frontend will refresh)
-    if (error.code === 'auth/id-token-expired') {
-      console.log('Token expired for request, client will refresh and retry');
-      return res.status(401).json({
-        success: false,
-        error: 'Token expired',
-        code: 'TOKEN_EXPIRED'
-      });
+    // Try to verify as JWT token first (for mobile app)
+    try {
+      const decoded = jwt.verify(token, JWT_SECRET);
+      // JWT token verified successfully (mobile app)
+      req.user = {
+        userId: decoded.userId,
+        email: decoded.email
+      };
+      return next();
+    } catch (jwtError) {
+      // Not a JWT token or invalid, try Firebase token (for web app)
     }
 
-    // Log actual authentication errors
-    console.error('Authentication error:', error);
+    // Try to verify as Firebase ID token (for web app)
+    try {
+      const decodedToken = await getAuth().verifyIdToken(token);
+      req.user = {
+        userId: decodedToken.uid,
+        email: decodedToken.email
+      };
+      return next();
+    } catch (firebaseError) {
+      // Check if token is expired
+      if (firebaseError.code === 'auth/id-token-expired') {
+        return res.status(401).json({
+          success: false,
+          error: 'Token expired',
+          code: 'TOKEN_EXPIRED'
+        });
+      }
+      throw firebaseError;
+    }
 
+  } catch (error) {
+    console.error('Authentication error:', error);
     return res.status(403).json({
       success: false,
       error: 'Invalid or expired token'

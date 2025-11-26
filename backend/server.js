@@ -56,15 +56,31 @@ app.use(helmet({
   }
 }));
 
-// CORS configuration - Allow frontend on port 5173
+// CORS configuration - Allow all origins for development (mobile app needs this)
 app.use(cors({
-  origin: process.env.FRONTEND_URL || 'http://localhost:5173',
+  origin: true, // Allow all origins
   credentials: true
 }));
 
-// Body parser
+// Body parser (MUST BE BEFORE logging to see req.body)
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+
+// Request logging middleware - LOG EVERYTHING
+app.use((req, res, next) => {
+  console.log('\n═══════════════════════════════════════════════════════');
+  console.log('📥 INCOMING REQUEST:');
+  console.log('   Method:', req.method);
+  console.log('   URL:', req.url);
+  console.log('   Origin:', req.headers.origin || 'No origin header');
+  console.log('   Content-Type:', req.headers['content-type'] || 'None');
+  console.log('   Authorization:', req.headers.authorization ? 'Present (Bearer ...)' : 'MISSING');
+  if (req.body && Object.keys(req.body).length > 0) {
+    console.log('   Body:', JSON.stringify(req.body, null, 2));
+  }
+  console.log('═══════════════════════════════════════════════════════\n');
+  next();
+});
 
 // Rate limiting
 const limiter = rateLimit({
