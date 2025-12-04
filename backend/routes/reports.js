@@ -144,6 +144,36 @@ router.get('/', authenticateToken, async (req, res) => {
 });
 
 /**
+ * GET /api/reports/my-reports (ALIAS)
+ * Get all reports for current user (PROTECTED - requires authentication)
+ */
+router.get('/my-reports', authenticateToken, async (req, res) => {
+  try {
+    const userId = req.user.userId;
+    const limit = parseInt(req.query.limit) || 50;
+    const offset = parseInt(req.query.offset) || 0;
+
+    console.log('📋 Fetching MY REPORTS for user:', userId, 'limit:', limit, 'offset:', offset);
+
+    const result = await getUserReports(userId, limit, offset);
+
+    console.log('✅ My Reports fetched:', result.success ? `${result.count} reports` : 'Failed');
+    console.log('   User ID:', userId);
+    console.log('   Reports Count:', result.reports?.length || 0);
+
+    res.json(result);
+
+  } catch (error) {
+    console.error('❌ Get my reports error:', error);
+    console.error('   Error stack:', error.stack);
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
+});
+
+/**
  * PUT /api/reports/:id
  * Update report (PROTECTED - requires authentication)
  */
