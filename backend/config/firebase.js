@@ -28,12 +28,13 @@ function initializeFirebase() {
       firebaseApp = admin.initializeApp({
         credential: admin.credential.cert(serviceAccount),
         projectId: serviceAccount.project_id,
-        // Storage bucket removed - using local file storage instead
+        storageBucket: `${serviceAccount.project_id}.appspot.com`,
         databaseURL: `https://${serviceAccount.project_id}.firebaseio.com`
       });
 
       console.log('✅ Firebase initialized successfully');
       console.log(`   Project ID: ${serviceAccount.project_id}`);
+      console.log(`   Storage Bucket: ${serviceAccount.project_id}.appspot.com`);
     }
     return firebaseApp;
   } catch (error) {
@@ -54,11 +55,12 @@ function getFirestore() {
 
 /**
  * Get Firebase Storage instance
- * NOTE: Firebase Storage is disabled. Use local file storage instead.
- * This function is kept for backward compatibility but will throw an error if called.
  */
 function getStorage() {
-  throw new Error('Firebase Storage is disabled. Using local file storage instead. Check services/storageService.js');
+  if (!firebaseApp) {
+    initializeFirebase();
+  }
+  return admin.storage();
 }
 
 /**
