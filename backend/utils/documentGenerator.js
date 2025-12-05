@@ -594,43 +594,31 @@ function renderMarkdownTextPDF(doc, text, options = {}) {
     parts.push({ text: text.substring(currentPos), bold: false });
   }
 
-  // If no markdown found, render as plain text
+  // If no markdown found, render as plain text with proper wrapping
   if (parts.length === 0) {
-    doc.font('Helvetica').text(text, { indent, lineGap, align: 'left' });
+    doc.font('Helvetica').text(text, {
+      indent: indent,
+      lineGap: lineGap,
+      align: 'left',
+      width: doc.page.width - doc.page.margins.left - doc.page.margins.right - indent
+    });
     return;
   }
 
-  // Render parts with mixed formatting
-  const startX = doc.x + indent;
-  const startY = doc.y;
-  let currentX = startX;
-  const maxWidth = doc.page.width - doc.page.margins.left - doc.page.margins.right - indent;
-
+  // Render parts with mixed formatting using continued option properly
   for (let i = 0; i < parts.length; i++) {
     const part = parts[i];
     const font = part.bold ? 'Helvetica-Bold' : 'Helvetica';
     doc.font(font);
 
-    // Measure text width
-    const textWidth = doc.widthOfString(part.text);
-
-    // Check if we need to wrap to next line
-    if (currentX + textWidth > startX + maxWidth && currentX > startX) {
-      doc.text('');  // Move to next line
-      currentX = startX;
-    }
-
-    // Render the text part
-    doc.text(part.text, currentX, doc.y, {
+    // Render the text part with proper continuation
+    doc.text(part.text, {
       continued: i < parts.length - 1,
-      lineBreak: false
+      lineGap: lineGap,
+      indent: i === 0 ? indent : 0,
+      width: doc.page.width - doc.page.margins.left - doc.page.margins.right - (i === 0 ? indent : 0)
     });
-
-    currentX += textWidth;
   }
-
-  // Finish the line
-  doc.text('');
 }
 
 /**
