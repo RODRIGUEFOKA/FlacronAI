@@ -994,6 +994,7 @@ export default function App() {
   // Email verification state
   const [showVerificationScreen, setShowVerificationScreen] = useState(false);
   const [pendingVerificationEmail, setPendingVerificationEmail] = useState('');
+  const [pendingVerificationPassword, setPendingVerificationPassword] = useState('');
   const [resendingVerification, setResendingVerification] = useState(false);
 
   // Report generation state
@@ -1272,8 +1273,9 @@ export default function App() {
       if (data.success) {
         Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
 
-        // Store email for verification screen
+        // Store email and password for verification screen
         setPendingVerificationEmail(email);
+        setPendingVerificationPassword(password);
 
         // Clear form
         setPassword('');
@@ -1357,6 +1359,7 @@ export default function App() {
         if (data.emailVerified === false || (data.error && data.error.includes('verify your email'))) {
           console.log('   ⚠️ Email not verified - showing verification screen');
           setPendingVerificationEmail(email);
+          setPendingVerificationPassword(password);
           setPassword('');
           setShowVerificationScreen(true);
           return;
@@ -1415,6 +1418,11 @@ export default function App() {
       return;
     }
 
+    if (!pendingVerificationPassword) {
+      Alert.alert('Error', 'Session expired. Please go back and login again.');
+      return;
+    }
+
     setResendingVerification(true);
     console.log('RESEND VERIFICATION:');
     console.log('   Email:', pendingVerificationEmail);
@@ -1426,7 +1434,10 @@ export default function App() {
           'Content-Type': 'application/json',
           'Accept': 'application/json'
         },
-        body: JSON.stringify({ email: pendingVerificationEmail })
+        body: JSON.stringify({
+          email: pendingVerificationEmail,
+          password: pendingVerificationPassword
+        })
       });
 
       const data = await response.json();
@@ -1437,6 +1448,7 @@ export default function App() {
         if (data.alreadyVerified) {
           Alert.alert('Already Verified', 'Your email is already verified! You can now log in.');
           setShowVerificationScreen(false);
+          setPendingVerificationPassword('');
           setIsLogin(true);
         } else {
           Alert.alert('Email Sent', 'Verification email sent! Please check your inbox and spam folder.');
@@ -1483,6 +1495,7 @@ export default function App() {
         setShowVerificationScreen(false);
         setEmail(pendingVerificationEmail);
         setPendingVerificationEmail('');
+        setPendingVerificationPassword('');
         setIsLogin(true);
       } else {
         Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning);
@@ -1503,6 +1516,7 @@ export default function App() {
   const handleBackToLogin = () => {
     setShowVerificationScreen(false);
     setPendingVerificationEmail('');
+    setPendingVerificationPassword('');
     setIsLogin(true);
   };
 
