@@ -1019,11 +1019,13 @@ const getStyles = (COLORS) => StyleSheet.create({
   },
   reportModalContent: {
     flex: 1,
+    backgroundColor: 'transparent',
   },
   reportModalContentContainer: {
     padding: 24,
     paddingTop: 20,
     paddingBottom: 20,
+    flexGrow: 1,
   },
   reportModalPreviewTitle: {
     fontSize: normalize(17),
@@ -1042,6 +1044,7 @@ const getStyles = (COLORS) => StyleSheet.create({
     fontSize: normalize(14),
     color: COLORS.text,
     lineHeight: normalize(24),
+    fontWeight: '400',
   },
   reportModalActions: {
     flexDirection: 'row',
@@ -2615,6 +2618,8 @@ export default function App() {
             <ScrollView
               style={styles.reportModalContent}
               contentContainerStyle={styles.reportModalContentContainer}
+              showsVerticalScrollIndicator={true}
+              nestedScrollEnabled={true}
             >
               <Text style={styles.reportModalPreviewTitle}>Preview</Text>
               <View style={styles.reportModalBox}>
