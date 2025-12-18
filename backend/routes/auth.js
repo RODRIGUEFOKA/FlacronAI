@@ -178,23 +178,25 @@ router.post('/login', async (req, res) => {
     // Check for Firebase Auth errors
     if (firebaseResponse.error) {
       const errorCode = firebaseResponse.error.message;
-      console.log(`❌ Login failed: ${errorCode}`);
+      console.log(`❌ Login failed with Firebase error code: ${errorCode}`);
+      console.log(`   Full Firebase response:`, JSON.stringify(firebaseResponse, null, 2));
 
       let errorMessage = 'Invalid email or password';
 
       if (errorCode === 'EMAIL_NOT_FOUND') {
         errorMessage = 'No account found with this email';
-      } else if (errorCode === 'INVALID_PASSWORD' || errorCode === 'INVALID_LOGIN_CREDENTIALS') {
+      } else if (errorCode === 'INVALID_PASSWORD' || errorCode === 'INVALID_LOGIN_CREDENTIALS' || errorCode.includes('INVALID_CREDENTIAL') || errorCode.includes('INVALID')) {
         errorMessage = 'Incorrect password';
       } else if (errorCode === 'USER_DISABLED') {
         errorMessage = 'This account has been disabled';
-      } else if (errorCode === 'TOO_MANY_ATTEMPTS_TRY_LATER') {
+      } else if (errorCode === 'TOO_MANY_ATTEMPTS_TRY_LATER' || errorCode.includes('TOO_MANY')) {
         errorMessage = 'Too many failed login attempts. Please try again later.';
       }
 
       return res.status(401).json({
         success: false,
-        error: errorMessage
+        error: errorMessage,
+        firebaseError: errorCode // Include Firebase error for debugging
       });
     }
 
@@ -478,6 +480,72 @@ router.post('/sync-user', authenticateToken, async (req, res) => {
     res.status(500).json({
       success: false,
       error: error.message
+    });
+  }
+});
+
+/**
+ * POST /api/auth/reset-password
+ * Send password reset email via Firebase
+ */
+router.post('/reset-password', async (req, res) => {
+  try {
+    const { email } = req.body;
+
+    if (!email) {
+      return res.status(400).json({
+        success: false,
+        error: 'Email is required'
+      });
+    }
+
+    // Check if user exists
+    try {
+      await getAuth().getUserByEmail(email);
+    } catch (error) {
+      if (error.code === 'auth/user-not-found') {
+        return res.status(404).json({
+          success: false,
+          error: 'No account found with this email'
+        });
+      }
+      throw error;
+    }
+
+    // Send password reset email via Firebase REST API
+    const url = `https://identitytoolkit.googleapis.com/v1/accounts:sendOobCode?key=${FIREBASE_API_KEY}`;
+
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        requestType: 'PASSWORD_RESET',
+        email: email
+      })
+    });
+
+    const data = await response.json();
+
+    if (data.error) {
+      console.error('Firebase password reset error:', data.error.message);
+      return res.status(500).json({
+        success: false,
+        error: 'Failed to send password reset email'
+      });
+    }
+
+    console.log(`📧 Password reset email sent to: ${email}`);
+
+    res.json({
+      success: true,
+      message: 'Password reset email sent! Please check your inbox and spam folder.'
+    });
+
+  } catch (error) {
+    console.error('Password reset error:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message || 'Failed to send password reset email'
     });
   }
 });
