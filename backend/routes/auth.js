@@ -605,4 +605,163 @@ router.post('/logout', authenticateToken, async (req, res) => {
   }
 });
 
+/**
+ * POST /api/auth/social-login
+ * Handle Google and Apple Sign-In authentication
+ * Verifies Firebase ID token and creates/updates user in database
+ */
+router.post('/social-login', async (req, res) => {
+  try {
+    console.log('\n🔐 SOCIAL LOGIN ATTEMPT:');
+
+    // Get Firebase ID token from Authorization header
+    const authHeader = req.headers.authorization;
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      console.log('❌ No token provided');
+      return res.status(401).json({
+        success: false,
+        error: 'No token provided'
+      });
+    }
+
+    const firebaseToken = authHeader.split('Bearer ')[1];
+
+    // Extract user data from request body
+    const { firebaseUid, email, displayName, provider, photoURL } = req.body;
+
+    // Validate required fields
+    if (!firebaseUid || !email || !displayName || !provider) {
+      console.log('❌ Missing required fields');
+      return res.status(400).json({
+        success: false,
+        error: 'Missing required fields: firebaseUid, email, displayName, provider'
+      });
+    }
+
+    console.log(`   Provider: ${provider}`);
+    console.log(`   Email: ${email}`);
+    console.log(`   Display Name: ${displayName}`);
+
+    // Verify Firebase token
+    let decodedToken;
+    try {
+      decodedToken = await getAuth().verifyIdToken(firebaseToken);
+      console.log('✅ Firebase token verified');
+    } catch (error) {
+      console.error('❌ Invalid Firebase token:', error.message);
+      return res.status(401).json({
+        success: false,
+        error: 'Invalid Firebase token'
+      });
+    }
+
+    // Verify firebaseUid matches token
+    if (decodedToken.uid !== firebaseUid) {
+      console.error('❌ Firebase UID mismatch');
+      return res.status(401).json({
+        success: false,
+        error: 'Firebase UID mismatch'
+      });
+    }
+
+    // Get or create user in Firestore
+    const db = getFirestore();
+    const userRef = db.collection('users').doc(firebaseUid);
+    const userDoc = await userRef.get();
+
+    const now = new Date();
+    const currentPeriod = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+
+    let isNewUser = false;
+    let userData;
+
+    if (!userDoc.exists) {
+      // Create new user
+      console.log('📝 Creating new user profile');
+      userData = {
+        userId: firebaseUid,
+        firebaseUid: firebaseUid,
+        email: email.toLowerCase(),
+        displayName: displayName,
+        provider: provider,
+        photoURL: photoURL || null,
+        emailVerified: true,
+        tier: 'starter',
+        reportsGenerated: 0,
+        currentPeriod: currentPeriod,
+        periodUsage: 0,
+        createdAt: now.toISOString(),
+        updatedAt: now.toISOString()
+      };
+
+      await userRef.set(userData);
+      isNewUser = true;
+      console.log('✅ New user created');
+    } else {
+      // Update existing user
+      console.log('📝 Updating existing user profile');
+      userData = userDoc.data();
+
+      const updates = {
+        displayName: displayName,
+        updatedAt: now.toISOString()
+      };
+
+      if (photoURL && !userData.photoURL) {
+        updates.photoURL = photoURL;
+      }
+
+      if (!userData.provider) {
+        updates.provider = provider;
+      }
+
+      if (!userData.firebaseUid) {
+        updates.firebaseUid = firebaseUid;
+      }
+
+      await userRef.update(updates);
+      userData = { ...userData, ...updates };
+      console.log('✅ User profile updated');
+    }
+
+    // Generate JWT token
+    const jwtToken = jwt.sign(
+      {
+        userId: firebaseUid,
+        email: email.toLowerCase(),
+        provider: provider
+      },
+      JWT_SECRET,
+      { expiresIn: '30d' }
+    );
+
+    console.log('✅ JWT token generated');
+    console.log(`🎉 Social login successful for ${email}\n`);
+
+    res.json({
+      success: true,
+      token: jwtToken,
+      user: {
+        userId: firebaseUid,
+        firebaseUid: firebaseUid,
+        email: userData.email,
+        displayName: userData.displayName,
+        provider: userData.provider,
+        photoURL: userData.photoURL,
+        createdAt: userData.createdAt,
+        tier: userData.tier,
+        reportsGenerated: userData.reportsGenerated
+      },
+      isNewUser: isNewUser
+    });
+
+  } catch (error) {
+    console.error('❌ Social login error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Internal server error'
+    });
+  }
+});
+
 module.exports = router;
