@@ -41,7 +41,7 @@ export const signInWithGoogle = async () => {
         try {
           // Configure Google Sign In
           GoogleSignin.configure({
-            webClientId: '924587706021-eec9131d64c8ee0f81ef4c.apps.googleusercontent.com', // From Firebase config
+            webClientId: '924587706021-eec9131d64c8ee0f81ef4c.apps.googleusercontent.com',
           });
 
           // Check if device supports Google Play services
@@ -60,9 +60,13 @@ export const signInWithGoogle = async () => {
           throw nativeError;
         }
       } else {
-        // Fallback to Firebase web-based authentication
-        console.log('Using Firebase web-based Google authentication');
-        result = await auth.signInWithPopup(googleProvider);
+        // Native module not available - show helpful message
+        console.log('⚠️ Native Google Sign-In not available in Expo Go');
+        return {
+          success: false,
+          error: 'Google Sign-In requires a development build. Please use Email/Password login or create a development build to use Google Sign-In.',
+          requiresDevBuild: true
+        };
       }
     }
 
@@ -184,9 +188,13 @@ export const signInWithApple = async () => {
           throw nativeError;
         }
       } else {
-        // Fallback to Firebase web-based authentication
-        console.log('Using Firebase web-based Apple authentication');
-        result = await auth.signInWithPopup(appleProvider);
+        // Native module not available
+        console.log('⚠️ Native Apple Sign-In not available in Expo Go');
+        return {
+          success: false,
+          error: 'Apple Sign-In requires a development build. Please use Email/Password login or create a development build to use Apple Sign-In.',
+          requiresDevBuild: true
+        };
       }
     } else {
       return {

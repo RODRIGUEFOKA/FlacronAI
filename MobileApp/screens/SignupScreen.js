@@ -15,7 +15,7 @@ import {
   ActivityIndicator,
   Modal
 } from 'react-native';
-import { MaterialIcons } from '@expo/vector-icons';
+import { MaterialIcons, FontAwesome5 } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Svg, { Circle } from 'react-native-svg';
 import { signUpWithEmail, signInWithGoogle, signInWithApple, isGoogleSignInAvailable, isAppleSignInAvailable } from '../services/authService';
@@ -391,7 +391,7 @@ const SignupScreen = ({ navigation }) => {
                           {googleLoading ? (
                             <ActivityIndicator color="#FF6B35" size="small" />
                           ) : (
-                            <MaterialIcons name="google" size={24} color="#DB4437" />
+                            <FontAwesome5 name="google" size={24} color="#DB4437" />
                           )}
                         </TouchableOpacity>
                       )}
