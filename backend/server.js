@@ -6,9 +6,10 @@ const rateLimit = require('express-rate-limit');
 const path = require('path');
 require('dotenv').config({ path: path.join(__dirname, '.env') });
 
-// Initialize Firebase and Gemini AI
+// Initialize Firebase and AI providers
 const { initializeFirebase } = require('./config/firebase');
-const { initializeGemini } = require('./config/gemini');
+const { initializeOpenAI } = require('./config/openai');
+const { initializeWatsonX } = require('./config/watsonx');
 
 // Import routes
 const reportsRouter = require('./routes/reports');
@@ -196,14 +197,21 @@ async function startServer() {
     // Initialize Firebase
     initializeFirebase();
 
-    // Initialize Gemini AI
-    console.log('\n📡 Initializing AI Provider...');
+    // Initialize AI providers
+    console.log('\n📡 Initializing AI Providers...');
 
     try {
-      initializeGemini();
-      console.log('   ✅ Gemini AI: Ready for all AI features');
+      initializeOpenAI();
+      console.log('   🟢 OpenAI: Ready for general features');
     } catch (error) {
-      console.warn('   ⚠️ Gemini AI: Not configured -', error.message);
+      console.warn('   ⚠️ OpenAI: Not configured -', error.message);
+    }
+
+    try {
+      initializeWatsonX();
+      console.log('   🔵 WatsonX AI: Ready for enterprise reports');
+    } catch (error) {
+      console.warn('   ⚠️ WatsonX AI: Not configured -', error.message);
     }
 
     // Start Express server
@@ -214,7 +222,7 @@ async function startServer() {
 ║               🔥 FLACRONAI SERVER 🔥                  ║
 ║                                                       ║
 ║  AI-powered Insurance Report Generator               ║
-║  Powered by Google Gemini AI                         ║
+║  Dual-AI: OpenAI + IBM WatsonX                       ║
 ║                                                       ║
 ╠═══════════════════════════════════════════════════════╣
 ║                                                       ║
@@ -223,7 +231,7 @@ async function startServer() {
 ║  Health:    http://localhost:${PORT}/health              ║
 ║  Domain:    https://flacronai.com                     ║
 ║                                                       ║
-║  AI:        Google Gemini AI                         ║
+║  AI:        OpenAI (General) + WatsonX (Reports)     ║
 ║  Status:    ✅ Running                                ║
 ║                                                       ║
 ╚═══════════════════════════════════════════════════════╝
