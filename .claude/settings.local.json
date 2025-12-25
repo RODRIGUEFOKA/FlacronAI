@@ -96,7 +96,8 @@
       "Bash(del MAGIC_UI_IMPLEMENTATION_COMPLETE.md MAGIC_UI_FIXES.md COMPONENT_DEBUG_GUIDE.md)",
       "Bash(git checkout:*)",
       "Bash(timeout:*)",
-      "Bash(del \"C:\\\\Users\\\\pc\\\\Desktop\\\\FlacronCV\\\\upgrade_ui.py\")"
+      "Bash(del \"C:\\\\Users\\\\pc\\\\Desktop\\\\FlacronCV\\\\upgrade_ui.py\")",
+      "Bash(find:*)"
     ],
     "deny": [],
     "ask": []

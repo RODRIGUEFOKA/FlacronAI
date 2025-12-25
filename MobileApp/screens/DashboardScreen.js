@@ -9,10 +9,12 @@ import {
   Dimensions,
   Platform,
   StatusBar,
+  ActivityIndicator,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import * as Haptics from 'expo-haptics';
 import { AIAssistantBubble } from '../components/AIAssistant';
+import { userService, reportService } from '../services/api';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
@@ -32,15 +34,58 @@ const COLORS = {
 
 export default function DashboardScreen({ userEmail, userName, onShowAIAssistant, onTabChange }) {
   const [refreshing, setRefreshing] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [stats, setStats] = useState({
     usedThisMonth: 0,
     monthlyLimit: 1,
     totalReports: 0,
   });
+  const [recentReports, setRecentReports] = useState([]);
+
+  useEffect(() => {
+    loadDashboardData();
+  }, []);
+
+  const loadDashboardData = async () => {
+    try {
+      setLoading(true);
+      const [statsData, reportsData] = await Promise.all([
+        userService.getStats(),
+        reportService.getMyReports(),
+      ]);
+
+      if (statsData.success) {
+        setStats({
+          usedThisMonth: statsData.stats.reportsGenerated || 0,
+          monthlyLimit: getMonthlyLimit(statsData.stats.tier),
+          totalReports: statsData.stats.totalReports || 0,
+        });
+      }
+
+      if (reportsData.success && reportsData.reports) {
+        setRecentReports(reportsData.reports.slice(0, 3));
+      }
+    } catch (error) {
+      console.error('Error loading dashboard data:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const getMonthlyLimit = (tier) => {
+    const limits = {
+      free: 10,
+      starter: 50,
+      professional: 200,
+      enterprise: 999,
+    };
+    return limits[tier?.toLowerCase()] || 1;
+  };
 
   const onRefresh = async () => {
     setRefreshing(true);
-    setTimeout(() => setRefreshing(false), 1000);
+    await loadDashboardData();
+    setRefreshing(false);
   };
 
   return (
@@ -164,6 +209,32 @@ export default function DashboardScreen({ userEmail, userName, onShowAIAssistant
             </TouchableOpacity>
           </View>
         </View>
+
+        {/* Recent Reports */}
+        {recentReports.length > 0 && (
+          <View style={styles.recentSection}>
+            <Text style={styles.sectionTitle}>Recent Reports</Text>
+            {recentReports.map((report, index) => (
+              <TouchableOpacity
+                key={report.reportId || index}
+                style={styles.recentReportCard}
+                onPress={() => {
+                  Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                  onTabChange?.('reports');
+                }}
+              >
+                <View style={styles.reportIconCircle}>
+                  <Ionicons name="document-text" size={20} color={COLORS.orange} />
+                </View>
+                <View style={styles.reportDetails}>
+                  <Text style={styles.reportClaimNumber}>{report.claimNumber}</Text>
+                  <Text style={styles.reportInsuredName}>{report.insuredName}</Text>
+                </View>
+                <Ionicons name="chevron-forward" size={20} color={COLORS.textLight} />
+              </TouchableOpacity>
+            ))}
+          </View>
+        )}
 
         <View style={{ height: 120 }} />
       </ScrollView>
@@ -337,5 +408,45 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: 'rgba(255, 255, 255, 0.9)',
     fontWeight: '500',
+  },
+  recentSection: {
+    marginBottom: 24,
+  },
+  recentReportCard: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: COLORS.white,
+    borderRadius: 16,
+    padding: 16,
+    marginBottom: 12,
+    borderWidth: 1,
+    borderColor: COLORS.cardBorder,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.05,
+    shadowRadius: 4,
+    elevation: 2,
+  },
+  reportIconCircle: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: COLORS.iconBgPeach,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: 12,
+  },
+  reportDetails: {
+    flex: 1,
+  },
+  reportClaimNumber: {
+    fontSize: 15,
+    fontWeight: '600',
+    color: COLORS.textDark,
+    marginBottom: 2,
+  },
+  reportInsuredName: {
+    fontSize: 13,
+    color: COLORS.textGray,
   },
 });

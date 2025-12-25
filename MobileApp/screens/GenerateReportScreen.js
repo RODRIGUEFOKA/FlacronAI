@@ -12,6 +12,7 @@ import {
   ActivityIndicator,
   Alert,
   Dimensions,
+  Image,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
@@ -19,6 +20,7 @@ import * as ImagePicker from 'expo-image-picker';
 import * as Haptics from 'expo-haptics';
 import { AIAssistantBubble } from '../components/AIAssistant';
 import AnimatedBlobBackground from '../components/AnimatedBlobBackground';
+import { reportService } from '../services/api';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
@@ -38,7 +40,7 @@ const normalize = (size) => {
   return Math.round(size * scale);
 };
 
-export default function GenerateReportScreen({ onShowAIAssistant }) {
+export default function GenerateReportScreen({ onShowAIAssistant, onTabChange }) {
   const [loading, setLoading] = useState(false);
   const [photos, setPhotos] = useState([]);
   const [formData, setFormData] = useState({
@@ -76,11 +78,42 @@ export default function GenerateReportScreen({ onShowAIAssistant }) {
     setLoading(true);
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
 
-    // API call to generate report
-    setTimeout(() => {
+    try {
+      const result = await reportService.generateReport(formData, photos);
+
+      if (result.success) {
+        Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+        Alert.alert(
+          'Success',
+          'Report generated successfully!',
+          [
+            {
+              text: 'View Reports',
+              onPress: () => onTabChange?.('reports'),
+            },
+            {
+              text: 'Generate Another',
+              onPress: () => {
+                setFormData({
+                  claimNumber: '',
+                  insuredName: '',
+                  lossDate: '',
+                  lossType: 'Fire',
+                  propertyAddress: '',
+                  lossDescription: '',
+                });
+                setPhotos([]);
+              },
+            },
+          ]
+        );
+      }
+    } catch (error) {
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
+      Alert.alert('Error', error.message || 'Failed to generate report. Please try again.');
+    } finally {
       setLoading(false);
-      Alert.alert('Success', 'Report generated successfully!');
-    }, 2000);
+    }
   };
 
   return (
