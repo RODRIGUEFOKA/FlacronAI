@@ -187,7 +187,7 @@ export function createTemplateSelector(formId, containerId) {
   const selectorHTML = `
     <div class="template-selector" style="margin-bottom: 2rem; padding: 1.5rem; background: #f3f4f6; border-radius: 12px;">
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
-        <h3 style="margin: 0; font-size: 1.125rem; color: #1f2937;">
+        <h3 style="margin: 0; font-size: 1.125rem; color: #000000;">
           <svg style="display: inline; width: 20px; height: 20px; margin-right: 8px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
           </svg>
@@ -197,7 +197,7 @@ export function createTemplateSelector(formId, containerId) {
           Save as Template
         </button>
       </div>
-      <p style="color: #6b7280; font-size: 14px; margin-bottom: 1rem;">Try it now with sample data or use a saved template</p>
+      <p style="color: #000000; font-size: 14px; margin-bottom: 1rem;">Try it now with sample data or use a saved template</p>
       <div class="template-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1rem;">
         ${Object.entries(templates).map(([key, template]) => `
           <button class="template-card" data-template="${key}" style="
@@ -210,8 +210,8 @@ export function createTemplateSelector(formId, containerId) {
             transition: all 0.2s;
           ">
             <div style="font-size: 24px; margin-bottom: 0.5rem;">${template.icon || '📋'}</div>
-            <div style="font-weight: 600; color: #1f2937; margin-bottom: 0.25rem;">${template.name}</div>
-            <div style="font-size: 12px; color: #6b7280;">
+            <div style="font-weight: 600; color: #000000; margin-bottom: 0.25rem;">${template.name}</div>
+            <div style="font-size: 12px; color: #000000;">
               ${template.isDemo ? '📋 Demo' : '⭐ My Template'}
             </div>
           </button>

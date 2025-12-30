@@ -1,0 +1,315 @@
+/* ============================================
+   DASHBOARD ENHANCEMENTS - DARK MODE SUPPORT
+   ============================================ */
+
+[data-theme="dark"] {
+  --bg-primary: #000000;
+  --bg-secondary: #1f2937;
+  --bg-card: rgba(0, 0, 0, 0.6);
+  --text-primary: #ffffff;
+  --text-secondary: #9ca3af;
+  --border-color: rgba(255, 124, 8, 0.2);
+  --accent-color: #FF7C08;
+}
+
+[data-theme="light"] {
+  --bg-primary: #ffffff;
+  --bg-secondary: #f9fafb;
+  --bg-card: rgba(255, 255, 255, 0.8);
+  --text-primary: #1f2937;
+  --text-secondary: #6b7280;
+  --border-color: rgba(0, 0, 0, 0.1);
+  --accent-color: #FF7C08;
+}
+
+/* Dark Mode Sidebar */
+[data-theme="dark"] .sidebar {
+  background: rgba(0, 0, 0, 0.95);
+  border-right: 1px solid rgba(255, 124, 8, 0.2);
+}
+
+[data-theme="dark"] .sidebar h1 {
+  color: #ffffff;
+}
+
+[data-theme="dark"] .sidebar h1 span {
+  color: #FF7C08;
+}
+
+[data-theme="dark"] .nav-item {
+  color: #d1d5db;
+}
+
+[data-theme="dark"] .nav-item:hover,
+[data-theme="dark"] .nav-item.active {
+  background: rgba(255, 124, 8, 0.1);
+  color: #FF7C08;
+}
+
+/* Dark Mode Main Content */
+[data-theme="dark"] .main-content {
+  background: #000000;
+}
+
+[data-theme="dark"] .top-header {
+  background: rgba(0, 0, 0, 0.95);
+  border-bottom: 1px solid rgba(255, 124, 8, 0.2);
+}
+
+[data-theme="dark"] .page-title {
+  color: #ffffff;
+}
+
+[data-theme="dark"] .welcome-message {
+  color: #d1d5db;
+}
+
+[data-theme="dark"] .user-badge {
+  background: rgba(255, 124, 8, 0.2);
+  color: #FF7C08;
+}
+
+/* Dark Mode Usage Stats */
+[data-theme="dark"] .usage-card {
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 124, 8, 0.2);
+}
+
+[data-theme="dark"] .usage-card h3 {
+  color: #ffffff;
+}
+
+[data-theme="dark"] .stat-label {
+  color: #9ca3af;
+}
+
+[data-theme="dark"] .stat-value {
+  color: #ffffff;
+}
+
+/* Dark Mode Forms */
+[data-theme="dark"] .report-form input,
+[data-theme="dark"] .report-form select,
+[data-theme="dark"] .report-form textarea {
+  background: rgba(0, 0, 0, 0.4);
+  border-color: rgba(255, 124, 8, 0.2);
+  color: #ffffff;
+}
+
+[data-theme="dark"] .report-form input::placeholder,
+[data-theme="dark"] .report-form textarea::placeholder {
+  color: rgba(255, 255, 255, 0.4);
+}
+
+[data-theme="dark"] .report-form input:focus,
+[data-theme="dark"] .report-form select:focus,
+[data-theme="dark"] .report-form textarea:focus {
+  border-color: #FF7C08;
+  background: rgba(0, 0, 0, 0.6);
+}
+
+[data-theme="dark"] .form-section h3 {
+  color: #ffffff;
+}
+
+[data-theme="dark"] .form-group label {
+  color: #d1d5db;
+}
+
+[data-theme="dark"] .form-help {
+  color: #9ca3af;
+}
+
+/* Dark Mode Report Result */
+[data-theme="dark"] .report-result {
+  background: rgba(0, 0, 0, 0.6);
+  border-color: rgba(255, 124, 8, 0.2);
+}
+
+[data-theme="dark"] .result-header h3 {
+  color: #ffffff;
+}
+
+[data-theme="dark"] .result-content {
+  color: #d1d5db;
+}
+
+/* Dark Mode Report Cards */
+[data-theme="dark"] .report-card {
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 124, 8, 0.2);
+}
+
+[data-theme="dark"] .report-card h3 {
+  color: #ffffff;
+}
+
+[data-theme="dark"] .report-details {
+  color: #d1d5db;
+}
+
+[data-theme="dark"] .report-date {
+  color: #9ca3af;
+}
+
+/* Dark Mode Buttons */
+[data-theme="dark"] .btn-outline {
+  border-color: rgba(255, 124, 8, 0.3);
+  color: #FF7C08;
+}
+
+[data-theme="dark"] .btn-outline:hover {
+  background: rgba(255, 124, 8, 0.1);
+  border-color: #FF7C08;
+}
+
+/* Dark Mode Modal */
+[data-theme="dark"] .pricing-modal {
+  background: rgba(0, 0, 0, 0.95);
+  border: 2px solid rgba(255, 124, 8, 0.3);
+}
+
+[data-theme="dark"] .pricing-modal h2 {
+  color: #ffffff;
+}
+
+[data-theme="dark"] .modal-subtitle {
+  color: #9ca3af;
+}
+
+[data-theme="dark"] .pricing-modal-card {
+  background: rgba(0, 0, 0, 0.6);
+  border-color: rgba(255, 124, 8, 0.2);
+}
+
+[data-theme="dark"] .pricing-modal-card h3 {
+  color: #ffffff;
+}
+
+[data-theme="dark"] .plan-features li {
+  color: #d1d5db;
+}
+
+/* Dark Mode Footer */
+[data-theme="dark"] .footer {
+  background: rgba(0, 0, 0, 0.95);
+  border-top: 1px solid rgba(255, 124, 8, 0.2);
+}
+
+[data-theme="dark"] .footer h3,
+[data-theme="dark"] .footer h4 {
+  color: #ffffff;
+}
+
+[data-theme="dark"] .footer p,
+[data-theme="dark"] .footer a {
+  color: #9ca3af;
+}
+
+[data-theme="dark"] .footer a:hover {
+  color: #FF7C08;
+}
+
+/* Theme Toggle Button */
+.theme-toggle-btn {
+  width: 100%;
+  padding: 0.75rem;
+  margin-bottom: 1rem;
+  background: rgba(255, 124, 8, 0.1);
+  border: 1px solid rgba(255, 124, 8, 0.3);
+  border-radius: 8px;
+  color: #FF7C08;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  transition: all 0.3s ease;
+  font-weight: 500;
+}
+
+.theme-toggle-btn:hover {
+  background: rgba(255, 124, 8, 0.2);
+  transform: translateY(-2px);
+}
+
+[data-theme="dark"] .theme-toggle-btn {
+  background: rgba(255, 124, 8, 0.15);
+}
+
+/* Smooth Transitions */
+* {
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+button, input, select, textarea {
+  transition: all 0.3s ease;
+}
+
+/* Loading States */
+[data-theme="dark"] .loading-state {
+  color: #9ca3af;
+}
+
+[data-theme="dark"] .empty-state {
+  color: #9ca3af;
+}
+
+[data-theme="dark"] .empty-state h3 {
+  color: #d1d5db;
+}
+
+/* Section Titles */
+[data-theme="dark"] .section-title {
+  color: #ffffff;
+}
+
+[data-theme="dark"] .section-subtitle {
+  color: #9ca3af;
+}
+
+/* Plan Cards in Usage */
+[data-theme="dark"] .plan-card {
+  background: rgba(0, 0, 0, 0.6);
+  border-color: rgba(255, 124, 8, 0.2);
+}
+
+[data-theme="dark"] .plan-card h3 {
+  color: #ffffff;
+}
+
+[data-theme="dark"] .plan-name,
+[data-theme="dark"] .plan-price {
+  color: #ffffff;
+}
+
+[data-theme="dark"] .features-list ul li {
+  color: #d1d5db;
+}
+
+/* Billing Table */
+[data-theme="dark"] .billing-table table {
+  background: rgba(0, 0, 0, 0.4);
+}
+
+[data-theme="dark"] .billing-table thead {
+  background: rgba(255, 124, 8, 0.1);
+}
+
+[data-theme="dark"] .billing-table th {
+  color: #ffffff;
+}
+
+[data-theme="dark"] .billing-table td {
+  color: #d1d5db;
+  border-color: rgba(255, 124, 8, 0.1);
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+  .theme-toggle-btn {
+    margin-bottom: 0.75rem;
+  }
+}

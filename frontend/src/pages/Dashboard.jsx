@@ -13,11 +13,19 @@ import {
   SmartFieldFormatter
 } from '../utils/uxEnhancements';
 import { getReportPrompt } from '../config/aiPrompt';
+import QuickStatsCards from '../components/dashboard/QuickStatsCards';
+import SearchFilter from '../components/dashboard/SearchFilter';
+import ReportAnalytics from '../components/dashboard/ReportAnalytics';
+import DragDropUpload from '../components/dashboard/DragDropUpload';
+import BulkExport from '../components/dashboard/BulkExport';
+import { StatCardSkeleton, ReportCardSkeleton } from '../components/dashboard/LoadingSkeleton';
 import '../styles/styles.css';
 import '../styles/dashboard.css';
 import '../styles/modern-enhancements.css';
 import '../styles/dashboard-modern.css';
 import '../styles/dashboard-features.css';
+import '../styles/dashboard-enhanced.css';
+import '../styles/modern-dashboard.css';
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
 
@@ -34,6 +42,7 @@ const Dashboard = () => {
   const [loadingMessage, setLoadingMessage] = useState('');
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [myReports, setMyReports] = useState([]);
+  const [filteredReports, setFilteredReports] = useState([]);
   const [loadingReports, setLoadingReports] = useState(false);
   const [selectedReport, setSelectedReport] = useState(null);
   const [showPricingModal, setShowPricingModal] = useState(false);
@@ -170,6 +179,7 @@ const Dashboard = () => {
 
       if (result.success) {
         setMyReports(result.reports || []);
+        setFilteredReports(result.reports || []);
       }
     } catch (error) {
       console.error('Failed to fetch reports:', error);
@@ -243,6 +253,17 @@ const Dashboard = () => {
       setFormData(prev => ({ ...prev, photos: files }));
     } else {
       setFormData(prev => ({ ...prev, [name]: value }));
+    }
+  };
+
+  const handleDragDropFiles = (files) => {
+    setFormData(prev => ({ ...prev, photos: files }));
+  };
+
+  const handleBulkExport = async (reportIds, format) => {
+    // Export each report
+    for (const id of reportIds) {
+      await handleExport(format, id);
     }
   };
 
@@ -666,6 +687,9 @@ const Dashboard = () => {
         {currentPage === 'generate' && (
         <section className="generator" id="dashboard">
           <div className="container">
+            {/* Quick Stats Cards */}
+            <QuickStatsCards reports={myReports} usageStats={usageStats} />
+
             <h2 className="section-title">Generate Your Report</h2>
             <p className="section-subtitle">Create professional insurance inspection reports in seconds</p>
 
@@ -825,19 +849,7 @@ const Dashboard = () => {
 
                 <div className="form-section">
                   <h3>Photos (Optional)</h3>
-                  <div className="form-group">
-                    <label htmlFor="photos">Upload Photos</label>
-                    <input
-                      type="file"
-                      id="photos"
-                      name="photos"
-                      multiple
-                      accept="image/*"
-                      capture="environment"
-                      onChange={handleInputChange}
-                    />
-                    <p className="form-help">Upload up to 10 photos (Max 10MB each) - Click to use camera or browse</p>
-                  </div>
+                  <DragDropUpload onFilesSelected={handleDragDropFiles} maxFiles={10} />
                 </div>
 
                 <div className="form-actions">
@@ -894,10 +906,17 @@ const Dashboard = () => {
             <h2 className="section-title">My Reports</h2>
             <p className="section-subtitle">View and manage all your generated reports</p>
 
+            {/* Report Analytics */}
+            <ReportAnalytics reports={myReports} />
+
             {loadingReports ? (
               <div className="loading-state">
-                <div className="spinner"></div>
-                <p>Loading your reports...</p>
+                <div className="reports-grid">
+                  <ReportCardSkeleton />
+                  <ReportCardSkeleton />
+                  <ReportCardSkeleton />
+                  <ReportCardSkeleton />
+                </div>
               </div>
             ) : myReports.length === 0 ? (
               <div className="empty-state">
@@ -909,8 +928,15 @@ const Dashboard = () => {
                 </button>
               </div>
             ) : (
-              <div className="reports-grid">
-                {myReports.map((report) => (
+              <>
+                {/* Search and Filter */}
+                <SearchFilter reports={myReports} onFilteredReports={setFilteredReports} />
+
+                {/* Bulk Export */}
+                <BulkExport reports={filteredReports} onExport={handleBulkExport} />
+
+                <div className="reports-grid">
+                  {filteredReports.map((report) => (
                   <div key={report.id} className="report-card">
                     <div className="report-header">
                       <h3>{report.reportType || 'Insurance Report'}</h3>
@@ -938,7 +964,8 @@ const Dashboard = () => {
                     </div>
                   </div>
                 ))}
-              </div>
+                </div>
+              </>
             )}
           </div>
         </section>
