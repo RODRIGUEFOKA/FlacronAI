@@ -175,7 +175,8 @@
 /* Specific hero text colors */
 .hero-redesign h1,
 .hero-redesign p,
-.hero-redesign .badge-text {
+.hero-redesign .badge-text,
+.hero-redesign span {
   color: var(--white) !important;
 }
 
@@ -186,6 +187,10 @@
 .hero-redesign .cta-primary-redesign {
   background: var(--orange) !important;
   color: var(--black) !important;
+}
+
+.hero-redesign .badge-icon-redesign {
+  fill: var(--orange) !important;
 }
 
 /* Massive Orange Glows */
@@ -719,18 +724,29 @@
 .pricing-elite h3,
 .pricing-elite h4,
 .pricing-elite p,
-.pricing-elite li {
+.pricing-elite li,
+.pricing-elite span,
+.pricing-card-elite h3,
+.pricing-card-elite p,
+.pricing-card-elite li {
   color: var(--white) !important;
 }
 
-.pricing-elite .plan-price {
+.pricing-elite .plan-price,
+.pricing-elite .plan-price span {
   color: var(--orange) !important;
 }
 
 .pricing-elite .cta-plan,
-.pricing-elite button {
+.pricing-elite button,
+.pricing-card-elite button {
   background: var(--orange) !important;
   color: var(--black) !important;
+}
+
+.pricing-card-elite {
+  background: rgba(255, 255, 255, 0.03) !important;
+  border-color: rgba(255, 255, 255, 0.1) !important;
 }
 
 .pricing-elite::before {
@@ -948,11 +964,19 @@
 .footer-elite h4,
 .footer-elite p,
 .footer-elite a,
-.footer-elite li {
+.footer-elite li,
+.footer-elite span,
+.footer-powered,
+.footer-bottom-elite,
+.footer-bottom-elite p {
   color: var(--white) !important;
 }
 
 .footer-elite a:hover {
+  color: var(--orange) !important;
+}
+
+.footer-elite h4 {
   color: var(--orange) !important;
 }
 
