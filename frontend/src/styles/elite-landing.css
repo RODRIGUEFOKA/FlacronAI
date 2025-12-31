@@ -81,14 +81,7 @@
   border-bottom: 1px solid var(--white-10);
 }
 
-.navbar-redesign,
-.navbar-redesign * {
-  color: var(--white) !important;
-}
-
-.navbar-redesign .nav-cta-redesign {
-  color: var(--black) !important;
-}
+/* Remove wildcard - let specific styles handle it */
 
 .navbar-content-redesign {
   display: flex;
@@ -179,7 +172,10 @@
   padding-bottom: 80px;
 }
 
-.hero-redesign * {
+/* Specific hero text colors */
+.hero-redesign h1,
+.hero-redesign p,
+.hero-redesign .badge-text {
   color: var(--white) !important;
 }
 
@@ -580,7 +576,11 @@
   position: relative;
 }
 
-.features-elite * {
+/* Specific features text colors */
+.features-elite h1,
+.features-elite h2,
+.features-elite h3,
+.features-elite p {
   color: var(--black) !important;
 }
 
@@ -713,7 +713,13 @@
   overflow: hidden;
 }
 
-.pricing-elite * {
+/* Specific pricing text colors */
+.pricing-elite h1,
+.pricing-elite h2,
+.pricing-elite h3,
+.pricing-elite h4,
+.pricing-elite p,
+.pricing-elite li {
   color: var(--white) !important;
 }
 
@@ -721,7 +727,8 @@
   color: var(--orange) !important;
 }
 
-.pricing-elite .cta-plan {
+.pricing-elite .cta-plan,
+.pricing-elite button {
   background: var(--orange) !important;
   color: var(--black) !important;
 }
@@ -934,7 +941,14 @@
   border-top: 1px solid var(--white-10);
 }
 
-.footer-elite * {
+/* Specific footer text colors */
+.footer-elite h1,
+.footer-elite h2,
+.footer-elite h3,
+.footer-elite h4,
+.footer-elite p,
+.footer-elite a,
+.footer-elite li {
   color: var(--white) !important;
 }
 
