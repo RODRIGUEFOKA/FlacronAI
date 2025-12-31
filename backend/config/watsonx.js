@@ -95,7 +95,14 @@ ${reportData.damages || 'Not provided'}
 RECOMMENDATIONS:
 ${reportData.recommendations || 'Not provided'}
 
-Write a complete, comprehensive insurance claim report with the following sections. For EACH section, write detailed content with full sentences and paragraphs based on the information provided above:
+Write a complete, comprehensive insurance claim report with the following sections. For EACH section, write detailed content with full sentences and paragraphs based on the information provided above.
+
+FORMATTING REQUIREMENTS:
+- Use markdown formatting (## for section headers, **text** for bold, bullets with - or *)
+- Start each main section with ## followed by the section name
+- Use **bold** for important terms and subsection headings
+- Use bullet points for lists
+- Write in complete, professional paragraphs
 
 ## EXECUTIVE SUMMARY
 Write a detailed executive summary (2-3 paragraphs) that provides an overview of this claim, including the loss type, key findings, and overall assessment.
@@ -124,7 +131,11 @@ Write specific, actionable recommendations (2-3 paragraphs) for remediation, rep
 ## CONCLUSION
 Write a concluding paragraph summarizing the report findings and recommendations.
 
-IMPORTANT: Write the ACTUAL REPORT CONTENT with full paragraphs, not a template or outline. Be specific, factual, and professional. Use the claim information provided to create realistic, detailed content for each section.`;
+IMPORTANT:
+- Write the ACTUAL REPORT CONTENT with full paragraphs, not a template or outline
+- Use markdown formatting (##, **, bullets)
+- Be specific, factual, and professional
+- Use the claim information provided to create realistic, detailed content for each section`;
 
     // Generate text using WatsonX AI
     const textGenParams = {
@@ -159,11 +170,12 @@ IMPORTANT: Write the ACTUAL REPORT CONTENT with full paragraphs, not a template 
     }
 
     const generatedText = response.result.results[0].generated_text;
-    const cleanedText = stripMarkdown(generatedText);
+    // DO NOT strip markdown - preserve formatting for document generators
+    // const cleanedText = stripMarkdown(generatedText);
 
-    console.log('✅ WatsonX report generated, length:', cleanedText.length);
+    console.log('✅ WatsonX report generated, length:', generatedText.length);
 
-    return cleanedText;
+    return generatedText;
   } catch (error) {
     console.error('❌ WatsonX report generation error:', error);
     throw new Error(`Failed to generate report with WatsonX: ${error.message}`);

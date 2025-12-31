@@ -165,12 +165,12 @@ async function generateReport(reportData) {
   const prompt = `You are a professional insurance claims adjuster writing a property inspection report. Generate a comprehensive report following the CRU GROUP template format.
 
 CRITICAL OUTPUT REQUIREMENTS:
-- Output PLAIN TEXT ONLY with NO formatting symbols
-- NO asterisks, NO underscores, NO hashtags, NO markdown
+- Use markdown formatting for proper document structure
+- Use ## for main section headers (Example: ## REMARKS, ## RISK, ## DAMAGES)
+- Use **bold** for subsection headers like **Exterior:**, **Interior:**, **Front Elevation:**
+- Use bullet points with - or * for lists and detailed observations
 - Start IMMEDIATELY with the first section - NO introduction or preamble
-- Use ALL CAPS for main section headers
-- Use Title Case with colon for subsections (Example: "Front Elevation:")
-- Write as if typing in plain Notepad - zero formatting
+- Write complete, professional paragraphs with proper formatting
 
 CLAIM DATA:
 Claim Number: ${reportData.claimNumber}
@@ -185,58 +185,58 @@ ${reportData.damages ? `\nDamages: ${reportData.damages}` : ''}
 
 Generate the following report sections. Write naturally and professionally. Fill each section with realistic, detailed content based on the claim data above.
 
-Start your response with this EXACT structure:
+Start your response with this EXACT structure (use markdown formatting):
 
-REMARKS
+## REMARKS
 
 Thank you for the assignment. An inspection was conducted on ${currentDate}. This report details our findings regarding the ${reportData.lossType} loss at the insured property.
 
-RISK
+## RISK
 
 The risk is a [describe: one-story/two-story] [construction type: wood-framed, brick, etc.] residential dwelling with [roof type] roof and [siding type] siding in [good/fair/poor] condition. The property consists of approximately [square footage] square feet of living space. The occupancy is consistent with the policy declarations as a primary residence.
 
-ITV (Insurance to Value)
+## ITV (Insurance to Value)
 
 Based on the property size, construction quality, and current market conditions, the limit of insurance appears [adequate/low/high] for this risk.
 
-OCCURRENCE
+## OCCURRENCE
 
 On ${reportData.lossDate}, a ${reportData.lossType} occurred at the insured location resulting in property damage. [Provide 2-3 sentences describing the incident, how it happened, and immediate impacts]. The cause of loss is confirmed as ${reportData.lossType} per field inspection.
 
-COVERAGE
+## COVERAGE
 
 The risk is insured with the above stated limits, policy forms, and deductible. All aspects pertaining to coverage are submitted for the carrier's review and final disposition. No pertinent exclusions or limitations were observed during our inspection.
 
-DWELLING DAMAGE
+## DWELLING DAMAGE
 
-Exterior: [Describe condition of roof, all four elevations, siding, windows, doors, foundation, and any damage observed. Be specific about materials and damage extent.]
+**Exterior:** [Describe condition of roof, all four elevations, siding, windows, doors, foundation, and any damage observed. Be specific about materials and damage extent.]
 
-Interior: [Describe affected rooms with specific damage details. Include flooring, walls, ceilings, fixtures. Mention smoke/water damage, odor, or structural impacts room by room.]
+**Interior:** [Describe affected rooms with specific damage details. Include flooring, walls, ceilings, fixtures. Mention smoke/water damage, odor, or structural impacts room by room.]
 
-Emergency services: Emergency mitigation services are [expected/not expected] for this loss.
+**Emergency services:** Emergency mitigation services are [expected/not expected] for this loss.
 
-OTHER STRUCTURES DAMAGE
+## OTHER STRUCTURES DAMAGE
 
 The insured [did/did not] sustain damage to other structures. [If yes, describe fences, sheds, detached garages, etc. If no, state: "No damage to other structures was observed during our inspection."]
 
-CONTENTS DAMAGE
+## CONTENTS DAMAGE
 
 The insured [did/did not] sustain damage to contents or personal property. [If yes, describe affected items and categories. If no, state: "No contents damage was reported or observed."]
 
-ALE / FMV CLAIM
+## ALE / FMV CLAIM
 
 The risk [did/did not] become uninhabitable as a result of this loss. Additional Living Expenses (ALE) and Fair Market Value (FMV) claims are [anticipated/not anticipated] at this time.
 
-SUBROGATION / SALVAGE
+## SUBROGATION / SALVAGE
 
 [State either: "Subrogation potential exists against [party name]" OR "Our investigation did not reveal any third-party liability; therefore, subrogation potential is not present at this time."]
 
-WORK TO BE COMPLETED / RECOMMENDATION
+## WORK TO BE COMPLETED / RECOMMENDATION
 
 We recommend [payment of claim on ACV/RCTV basis / further inspection / closing without payment]. [Add any specific next steps.] Thank you for the opportunity to be of service to you and your policyholders.
 
 
-ASSIGNMENT
+## ASSIGNMENT
 
 Assignment was received on ${currentDate} to inspect the insured's property damages resulting from ${reportData.lossType}.
 
@@ -247,36 +247,36 @@ The following parties were present during our inspection: [List insured, PA, con
 A full inspection was conducted for the ${reportData.lossType} damages at the risk location, and we have outlined our findings in this report for your review and consideration.
 
 
-INSURED
+## INSURED
 
 Named insured is confirmed to be ${reportData.insuredName} which matches the provided policy information.
 
 The best contact number for the insured is [provide phone] and email is [provide email if available].
 
 
-RISK
+## RISK
 
 The loss notice and policy information confirm the risk is located at ${reportData.propertyAddress}.
 
 
-OWNERSHIP / INSURABLE INTEREST (Mortgagee)
+## OWNERSHIP / INSURABLE INTEREST (Mortgagee)
 
 Please confirm ownership and if there are any mortgagees on the risk location. [Add mortgagee information if known.]
 
 
-LOSS AND ORIGIN
+## LOSS AND ORIGIN
 
-Confirmed Date of Loss: ${reportData.lossDate}
-Confirmed Cause of Loss: ${reportData.lossType}
+**Confirmed Date of Loss:** ${reportData.lossDate}
+**Confirmed Cause of Loss:** ${reportData.lossType}
 
 [Provide 3-5 sentences describing: the date and time of loss, how it was discovered, by whom, under what circumstances, and detailed description of the actual or suspected cause. Be specific and thorough.]
 
 
-DAMAGES
+## DAMAGES
 
-DWELLING:
+**DWELLING:**
 
-ROOF:
+**ROOF:**
 Type: [Specify: Asphalt shingle, Metal, Tile, etc.]
 Age: [Specify age in years or state "Unknown"]
 Condition: [Good, Fair, Poor]
@@ -380,10 +380,10 @@ FORMATTING RULES - FOLLOW STRICTLY:
 
   const rawContent = await generateContent(prompt);
 
-  // Apply post-processing to strip any markdown that slipped through
-  const cleanedContent = stripMarkdownFormatting(rawContent);
+  // DO NOT strip markdown - preserve formatting for document generators
+  // const cleanedContent = stripMarkdownFormatting(rawContent);
 
-  return cleanedContent;
+  return rawContent;
 }
 
 module.exports = {
