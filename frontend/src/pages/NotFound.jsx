@@ -17,7 +17,7 @@ const NotFound = () => {
 
         .not-found-container {
           min-height: 100vh;
-          background: linear-gradient(135deg, #000000 0%, #1a1a1a 100%);
+          background: linear-gradient(135deg, #000000 0%, #1a1a1a 100%) !important;
           display: flex;
           align-items: center;
           justify-content: center;
@@ -30,13 +30,17 @@ const NotFound = () => {
           max-width: 600px;
         }
 
+        .not-found-content * {
+          color: #ffffff !important;
+        }
+
         .error-code {
           font-size: 10rem;
           font-weight: 900;
-          background: linear-gradient(135deg, #FF7C08 0%, #ff9f40 100%);
-          -webkit-background-clip: text;
-          -webkit-text-fill-color: transparent;
-          background-clip: text;
+          background: linear-gradient(135deg, #FF7C08 0%, #ff9f40 100%) !important;
+          -webkit-background-clip: text !important;
+          -webkit-text-fill-color: transparent !important;
+          background-clip: text !important;
           line-height: 1;
           margin-bottom: 1rem;
           text-shadow: 0 0 60px rgba(255, 124, 8, 0.3);
@@ -45,13 +49,13 @@ const NotFound = () => {
         .error-title {
           font-size: 2.5rem;
           font-weight: 700;
-          color: #ffffff;
+          color: #ffffff !important;
           margin-bottom: 1rem;
         }
 
         .error-message {
           font-size: 1.1rem;
-          color: rgba(255, 255, 255, 0.7);
+          color: rgba(255, 255, 255, 0.7) !important;
           margin-bottom: 2.5rem;
           line-height: 1.6;
         }
