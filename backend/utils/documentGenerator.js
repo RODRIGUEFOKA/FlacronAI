@@ -1037,11 +1037,17 @@ function formatPDFContent(doc, aiContent) {
     // Check if it's a bullet point (*, -, or + at start)
     const bulletMatch = line.match(/^[\*\-\+]\s+(.+)$/);
     if (bulletMatch) {
-      skipPreamble = false;
       const bulletText = bulletMatch[1];
+
+      // Skip if it's an AI instruction bullet
+      if (isPreambleText(bulletText)) {
+        continue;
+      }
+
+      skipPreamble = false;
       doc.fontSize(10).fillColor('#000000').font('Helvetica');
-      doc.text('• ', { continued: true });  // Changed to true for inline rendering
-      renderMarkdownTextPDF(doc, bulletText, { indent: 0, lineGap: 1 });  // No indent needed when inline
+      doc.text('• ', { continued: true });
+      renderMarkdownTextPDF(doc, bulletText, { indent: 0, lineGap: 1 });
       doc.moveDown(0.05);
       continue;
     }
@@ -1053,8 +1059,8 @@ function formatPDFContent(doc, aiContent) {
       const number = numberMatch[1];
       const listText = numberMatch[2];
 
-      // Check if this is in a Recommendation section
-      const isRecommendation = i > 0 && lines.slice(Math.max(0, i - 10), i).some(prevLine =>
+      // Check if this is in a Recommendation section (look back further to catch all items)
+      const isRecommendation = i > 0 && lines.slice(Math.max(0, i - 30), i).some(prevLine =>
         prevLine.trim().match(/RECOMMENDATION|ACTION PLAN|WORK TO BE COMPLETED/i)
       );
 
