@@ -484,7 +484,7 @@ function generatePDF(reportData, aiContent) {
   return new Promise((resolve, reject) => {
     try {
       const doc = new PDFDocument({
-        margin: 50,  // Reduced to 0.69 inch for more horizontal space
+        margin: 40,  // Reduced to 0.56 inch (40px) for maximum horizontal space
         size: 'LETTER',
         bufferPages: true  // Enable page numbering
       });
@@ -527,7 +527,7 @@ function generatePDF(reportData, aiContent) {
       const infoBoxY = doc.y;
       const pageWidth = doc.page.width;
       const boxWidth = pageWidth - (doc.page.margins.left + doc.page.margins.right);
-      const contentPadding = 20;  // Standard professional padding
+      const contentPadding = 10;  // Reduced padding for more content space
 
       // Draw background box for info section
       doc.rect(doc.page.margins.left, infoBoxY, boxWidth, 150)
@@ -672,16 +672,16 @@ function generatePDF(reportData, aiContent) {
           doc.fontSize(9)
              .fillColor('#FF7C08')
              .font('Helvetica-Bold')
-             .text('FLACRONAI', 50, 30, { align: 'left' });
+             .text('FLACRONAI', doc.page.margins.left, 30, { align: 'left' });
 
           doc.fontSize(8)
              .fillColor('#0d6efd')
              .font('Helvetica')
-             .text(`Claim #: ${reportData.claimNumber || 'N/A'}`, 50, 45, { align: 'left' });
+             .text(`Claim #: ${reportData.claimNumber || 'N/A'}`, doc.page.margins.left, 45, { align: 'left' });
 
           // Draw header line
-          doc.moveTo(50, 60)
-             .lineTo(doc.page.width - 50, 60)
+          doc.moveTo(doc.page.margins.left, 60)
+             .lineTo(doc.page.width - doc.page.margins.right, 60)
              .strokeColor('#dee2e6')
              .lineWidth(0.5)
              .stroke();
@@ -693,17 +693,17 @@ function generatePDF(reportData, aiContent) {
         doc.fontSize(8)
            .fillColor('#888888')
            .font('Helvetica')
-           .text(`Page ${i + 1} of ${pageCount}`, 50, footerY, {
+           .text(`Page ${i + 1} of ${pageCount}`, doc.page.margins.left, footerY, {
              align: 'center',
-             width: doc.page.width - 100
+             width: doc.page.width - (doc.page.margins.left + doc.page.margins.right)
            });
 
         doc.fontSize(7)
            .fillColor('#888888')
            .font('Helvetica-Oblique')
-           .text('Generated with FlacronAI - https://flacronai.com', 50, footerY + 12, {
+           .text('Generated with FlacronAI - https://flacronai.com', doc.page.margins.left, footerY + 12, {
              align: 'center',
-             width: doc.page.width - 100
+             width: doc.page.width - (doc.page.margins.left + doc.page.margins.right)
            });
       }
 
