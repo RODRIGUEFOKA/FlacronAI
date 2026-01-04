@@ -315,7 +315,9 @@ function isPreambleText(text) {
     'i have created',
     'i\'ve created',
     'this is the',
-    'as requested'
+    'as requested',
+    'do not include',
+    'stick to the facts'
   ];
   const lower = text.toLowerCase();
   return preamblePhrases.some(phrase => lower.startsWith(phrase));
@@ -667,25 +669,7 @@ function generatePDF(reportData, aiContent) {
       for (let i = 0; i < pageCount; i++) {
         doc.switchToPage(i);
 
-        // Header on every page (except first)
-        if (i > 0) {
-          doc.fontSize(9)
-             .fillColor('#FF7C08')
-             .font('Helvetica-Bold')
-             .text('FLACRONAI', 50, 30, { align: 'left' });
-
-          doc.fontSize(8)
-             .fillColor('#0d6efd')
-             .font('Helvetica')
-             .text(`Claim #: ${reportData.claimNumber || 'N/A'}`, 50, 45, { align: 'left' });
-
-          // Draw header line
-          doc.moveTo(50, 60)
-             .lineTo(doc.page.width - 50, 60)
-             .strokeColor('#dee2e6')
-             .lineWidth(0.5)
-             .stroke();
-        }
+        // No header on subsequent pages
 
         // Footer with page numbers on every page
         const footerY = doc.page.height - 50;
