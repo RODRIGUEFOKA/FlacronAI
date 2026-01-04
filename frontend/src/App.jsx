@@ -8,7 +8,6 @@ import Auth from './pages/Auth';
 import Dashboard from './pages/Dashboard';
 import CRM from './pages/CRM';
 import CRMLogin from './pages/CRMLogin';
-import Checkout from './pages/Checkout';
 import Subscriptions from './pages/Subscriptions';
 import AdminTierUpdate from './pages/AdminTierUpdate';
 import PrivacyPolicy from './pages/PrivacyPolicy';
@@ -37,14 +36,6 @@ function App() {
             element={
               <ProtectedRoute>
                 <CRM />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/checkout"
-            element={
-              <ProtectedRoute>
-                <Checkout />
               </ProtectedRoute>
             }
           />

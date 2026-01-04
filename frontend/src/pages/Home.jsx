@@ -365,7 +365,7 @@ const Home = () => {
                 { text: "Custom logo", available: false },
                 { text: "Priority support", available: false }
               ]}
-              link="/auth?redirect=checkout&plan=starter"
+              link="/auth"
               isFeatured={false}
               isAnnual={false}
               index={0}
@@ -384,7 +384,7 @@ const Home = () => {
                 { text: "Custom logo", available: true },
                 { text: "Email support", available: true }
               ]}
-              link="/auth?redirect=checkout&plan=professional"
+              link="/auth"
               isFeatured={true}
               isAnnual={false}
               index={1}
@@ -403,7 +403,7 @@ const Home = () => {
                 { text: "Custom integration", available: true },
                 { text: "Dedicated support", available: true }
               ]}
-              link="/auth?redirect=checkout&plan=enterprise"
+              link="/auth"
               isFeatured={false}
               isAnnual={false}
               index={2}
